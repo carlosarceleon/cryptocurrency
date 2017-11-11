@@ -11,7 +11,6 @@ def clean_data( df ):
     from numpy import nan
 
     df = df.replace(0, nan)
-    df = df.mean(axis=1)
 
     return df
 
@@ -20,4 +19,6 @@ def add_fiat_column( altcoin_data, btc_fiat_datasets, fiat = "EUR" ):
         altcoin_data[altcoin]['price_{}'.format(fiat)] = \
             altcoin_data[altcoin]['weightedAverage'] * \
             btc_fiat_datasets['avg_btc_price_{}'.format(fiat)]
+
+    return altcoin_data
 

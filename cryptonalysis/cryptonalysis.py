@@ -3,10 +3,10 @@ import sys
 def main(argv):
     from altcoinlist import altcoints_to_get
     from load_funcs import load_data
-    from data_processing import add_fiat_column
-    from load_funcs import get_averaged_btc, merge_dfs_on_column
+    from data_processing import add_fiat_column, merge_dfs_on_column
+    from load_funcs import get_averaged_btc
 
-    FIAT_TO_PROCESS = 'EUR'
+    FIAT_TO_PROCESS = 'USD'
 
     fiat = FIAT_TO_PROCESS
 
@@ -14,7 +14,7 @@ def main(argv):
 
     altcoin_data = {}
 
-    btc_fiat_datasets = get_averaged_btc(fiat)
+    btc_fiat_datasets = get_averaged_btc(fiat=fiat)
 
     for altcoin in altcoin_list:
         coinpair = 'BTC_{}'.format(altcoin)
@@ -22,7 +22,7 @@ def main(argv):
 
         altcoin_data[altcoin] = crypto_price_df
 
-    altcoin_data = add_fiat_column( altcoin_data, btc_fiat_datasets )
+    altcoin_data = add_fiat_column(altcoin_data, btc_fiat_datasets, fiat=fiat)
 
     combined_altcoin_df = merge_dfs_on_column(
         list(altcoin_data.values()),
@@ -30,7 +30,9 @@ def main(argv):
         'price_{}'.format(fiat)
     )
 
-    combined_altcoin_df['BTC'] = btc_fiat_datasets('avg_btc_price_{}'.format(fiat))
+    combined_altcoin_df['BTC'] = btc_fiat_datasets['avg_btc_price_{}'.format(fiat)]
+
+    return combined_altcoin_df
 
 
 if __name__=="__main__":

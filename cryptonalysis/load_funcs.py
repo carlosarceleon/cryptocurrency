@@ -6,8 +6,7 @@ def get_json_data(json_url, cache_path):
         f = open(cache_path, 'rb')
         df = pickle.load(f)
         print('Loaded {} from cache'.format(json_url))
-    except (OSError, IOError) as e:
-        print(e.message)
+    except (OSError, IOError):
         print('Downloading {}'.format(json_url))
         df = pd.read_json(json_url)
         df.to_pickle(cache_path)
@@ -44,8 +43,7 @@ def get_quandl_data(quandl_id):
         f = open(cache_path, 'rb')
         df = pickle.load(f)
         print('Loaded {} from cache'.format(quandl_id))
-    except (OSError, IOError) as e:
-        print(e.message)
+    except (OSError, IOError):
         print('Downloading {} from Quandl'.format(quandl_id))
         df = quandl.get(quandl_id, returns="pandas")
         df.to_pickle(cache_path)
@@ -73,6 +71,8 @@ def get_averaged_btc(fiat = 'EUR'):
         ),
         'Weighted Price'
     )
+
+    btc_fiat_datasets['avg_btc_price_{}'.format(fiat)] = btc_fiat_datasets.mean(axis=1)
 
     return clean_data(btc_fiat_datasets)
 
